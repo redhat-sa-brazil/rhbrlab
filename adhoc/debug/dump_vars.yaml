@@ -1,0 +1,28 @@
+---
+- hosts: all
+  tasks:
+    - name: Dump Module Variables
+      debug:
+        var: vars
+
+    - name: Dump Environment Variables
+      debug:
+        var: environment
+
+    - name: Dump Group Names Variables
+      debug:
+        var: group_names
+
+    - name: Dump Groups Variables
+      debug:
+        var: groups
+
+    - name: Dump Host Variables
+      debug:
+        var: hostvars
+
+
+
+
+
+
