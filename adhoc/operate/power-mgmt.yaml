@@ -1,0 +1,17 @@
+---
+- name:  Power Management
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    zone: ""      # Name of GCP zone
+    state: ""     # Value of 'started' or 'stopped'
+    instances: "" # List of instances names
+
+  tasks:
+   - name: "Setting instances state as {{ state }}"
+     gce:
+         zone: "{{ zone }}"
+         instance_names: "{{ item }}"
+         state: "{{ state }}"
+     with_items: "{{ instances }}"
