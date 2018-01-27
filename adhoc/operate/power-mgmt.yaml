@@ -4,14 +4,37 @@
   gather_facts: no
 
   vars:
-    zone: ""      # Name of GCP zone
-    state: ""     # Value of 'started' or 'stopped'
-    instances: "" # List of instances names
+    zone: ""          # Name of GCP zone
+    state: ""         # Value of 'started' or 'stopped'
+    instances: ""     # List of instances names
+    chat_id: ""       # Telegram Chat ID
+    token: ""         # Telegram Bot API Token
+    hold_timer: ""    # Minutes we will hold until turn off instances
+    job_api_url: ""   # URL for Ansible Tower Job Detail view
 
   tasks:
-   - name: "Setting instances state as {{ state }}"
-     gce:
-         zone: "{{ zone }}"
-         instance_names: "{{ item }}"
-         state: "{{ state }}"
-     with_items: "{{ instances }}"
+
+    - name: "Sending message to Telegram {{ chat_id }}"
+      telegram:
+        token: "{{ token }}"
+        chat_id: "{{ chat_id }}"
+        msg: "RHBRLAB será desligado em {{ hold_timer }} minutos! Para cancelar acesse  {{ job_api_url }}/{{ tower_job_id }} e cancele a tarefa."
+      when: state == "stopped"
+
+    - name: "Waiting for manual abort ({{ hold_timer }}"
+      pause:
+        minutes: "{{ hold_timer }}"
+      when: state == "stopped"
+
+    - name: "Setting instances state as {{ state }}"
+      gce:
+        zone: "{{ zone }}"
+        instance_names: "{{ item }}"
+        state: "{{ state }}"
+      with_items: "{{ instances }}"
+
+    - name: "Sending message to Telegram {{ chat_id }}"
+      telegram:
+        token: "{{ token }}"
+        chat_id: "{{ chat_id }}"
+        msg: "RHBRLAB foi {{ 'desligado' if state == 'stopped' else 'ligado' }} por {{ tower_user_id }}!"
