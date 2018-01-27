@@ -32,9 +32,11 @@
         instance_names: "{{ item }}"
         state: "{{ state }}"
       with_items: "{{ instances }}"
+      register: powermgmt
 
     - name: "Sending message to Telegram {{ chat_id }}"
       telegram:
         token: "{{ token }}"
         chat_id: "{{ chat_id }}"
-        msg: "RHBRLAB foi {{ 'desligado' if state == 'stopped' else 'ligado' }} por {{ tower_user_id }}!"
+        msg: "RHBRLAB foi {{ 'desligado' if state == 'stopped' else 'ligado' }} por {{ tower_user_name }}!"
+      when: powermgmt.changed
