@@ -1,0 +1,74 @@
+---
+- name: Prepare instances for OpenShift Deployment
+  hosts: all
+
+  vars:
+    rhn_username: ""                # RHN Username
+    rhn_password: ""                # RHN Password
+    rhn_pool: "^Employee SKU"       # RHSM Pool for OpenShift subscription
+    dockerstorage_dev: "/dev/sdb"   # Disk used for Docker Storage
+
+  tasks:
+    - name: Register instance and activate subscriptions using RHSM
+      redhat_subscription:
+        state: present
+        username: "{{ rhn_username }}"
+        password: "{{ rhn_password }}"
+        pool: "{{ rhn_pool }}"
+        force_register: yes
+
+    - name: Ensure the correct repositories are enabled
+      command: 'subscription-manager repos --disable="*" --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" \
+    --enable="rhel-7-server-ose-3.6-rpms" --enable="rhel-7-fast-datapath-rpms"'
+
+    - name: Update all RPMs packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install dependencies and must-have RPMs
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - wget
+        - git
+        - net-tools
+        - bind-utils
+        - iptables-services
+        - bridge-utils
+        - bash-completion
+        - kexec-tools
+        - sos
+        - psacct
+        - atomic-openshift-utils
+        - atomic-openshift-excluder
+        - atomic-openshift-docker-excluder
+        - docker
+        - vim
+        - mlocate
+
+    - name: Clear the Docker/OpenShift excluder locks
+      command: atomic-openshift-excluder unexclude
+    
+    - name: Create Docker-Storage-Setup sysconfig file
+      copy:
+        content: |
+          STORAGE_DRIVER="devicemapper"
+          DEVS="{{ dockerstorage_dev }}"
+          VG=docker-vg
+          DATA_SIZE=100%FREE
+          WIPE_SIGNATURES=true
+        dest: /etc/sysconfig/docker-storage-setup
+      register: dockerstorage
+
+    - name: Force Docker-Storage setup
+      command: docker-storage-setup
+      when: dockerstorage.changed
+      ignore_errors: yes
+    
+    - name: Starting and enabling Docker service.
+      service:
+        name: docker
+        enabled: yes
+        state: started
