@@ -1,5 +1,5 @@
 ---
-- name:  Power Management
+- name:  Lab Power Management
   hosts: localhost
   gather_facts: no
 
@@ -18,10 +18,10 @@
       telegram:
         token: "{{ token }}"
         chat_id: "{{ chat_id }}"
-        msg: "RHBRLAB será desligado em {{ hold_timer }} minutos! Para cancelar acesse  {{ job_api_url }}/{{ tower_job_id }} e cancele a tarefa."
+        msg: "RHBRLAB será desligado em {{ hold_timer }} minutos! Para cancelar acesse {{ job_api_url }}{{ tower_job_id }} ."
       when: state == "stopped"
 
-    - name: "Waiting for manual abort ({{ hold_timer }}"
+    - name: "Waiting {{ hold_timer }} minutes for manual abort"
       pause:
         minutes: "{{ hold_timer }}"
       when: state == "stopped"
@@ -38,5 +38,5 @@
       telegram:
         token: "{{ token }}"
         chat_id: "{{ chat_id }}"
-        msg: "RHBRLAB foi {{ 'desligado' if state == 'stopped' else 'ligado' }} por {{ tower_user_name }}!"
+        msg: "RHBRLAB foi {{ 'desligado' if state == 'stopped' else 'ligado' }} por {{ tower_user_name }} !"
       when: powermgmt.changed
