@@ -1,3 +1,4 @@
-# rhbrlab-ops
+# RHBRLAB
+> Ansible Playbooks used for operational tasks at RHBRLAB
 
-This repository stores all the playbooks used with the RHBRLAB initiative. Most part of them are not 'out-of-the-box' operational due to missing parameters, done purposely.
+This is the public repository for Ansible Playbooks used at RHBRLAB. Most part of the Ansible Playbooks are not functional without Ansible Tower, who is responsible to inject special variables, such as credentials. 
