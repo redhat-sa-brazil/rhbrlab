@@ -33,8 +33,16 @@
         state: "{{ state }}"
       with_items: "{{ instances }}"
 
-    - name: "Sending message to Telegram {{ chat_id }}"
+    - name: "Sending message to Telegram {{ chat_id }} - User Triggered"
       telegram:
         token: "{{ token }}"
         chat_id: "{{ chat_id }}"
         msg: "RHBRLAB foi {{ 'desligado' if state == 'stopped' else 'ligado' }} por {{ tower_user_name }} !"
+      when: tower_user_name is defined
+
+    - name: "Sending message to Telegram {{ chat_id }} - System Triggered"
+      telegram:
+        token: "{{ token }}"
+        chat_id: "{{ chat_id }}"
+        msg: "RHBRLAB foi {{ 'desligado' if state == 'stopped' else 'ligado' }} automaticamente !"
+      when: tower_user_name is not defined
