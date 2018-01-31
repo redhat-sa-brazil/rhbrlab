@@ -8,3 +8,6 @@ ansible.cfg
 *.retry
 gce.*
 credentials.json
+
+*.sh
+rhbrlab-bot
