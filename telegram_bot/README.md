@@ -1,4 +1,5 @@
 # Telegram Bot
+> Bot used for operational tasks at RHBRLAB
 
 This is a simple Telegram Bot, written in Golang, that interacts with Ansible Tower through RESTful APIs. The idea is to have a bot that can executes Ansible Playbook by simple Telegram commands.
 
