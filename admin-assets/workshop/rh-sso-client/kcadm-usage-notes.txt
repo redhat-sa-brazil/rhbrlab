@@ -1,0 +1,27 @@
+oc login https://console.ocp.rhbrlab.com:8443 --token=
+oc project rhsso-ocp-idp
+oc get pods
+mkdir ~/.keycloak
+oc cp rhsso-ocp-idp-2-kk2wk:/etc/sso-secret-volume ~/.keycloak/
+./kcadm.sh config truststore --trustpass 'truststore pwd here' ~/.keycloak/truststore.jks
+keytool --list -v -keystore ~/.keycloak/truststore.jks -storepass 'keystore pwd here'
+cd $RH_SSO_HOME/bin
+./kcadm.sh config credentials --server https://login.apps.paas.rhbrlab.com/auth --realm master --user admin --password 'sso pwd here'
+ou
+kcadm config credentials --server http://localhost:8080/auth --realm demo --user admin --client admin
+./kcadm.sh config truststore --trustpass 'truststore pwd here' /home/cloud-user/admin-assets/workshop/rh-sso-client/.keycloak/sso-https.jks --config ~/admin-assets/workshop/rh-sso-client/.keycloak/kcadm.config
+# deve criar um client no realm que se deseha administra com secrent e roles: realm-admin role of realm-management
+cat ~/.keycloak/kcadm.config
+
+./kcadm.sh get users -r cloud
+
+./kcadm.sh create users -r cloud \
+ -s username=testuser \
+ -s firstName=Test \
+ -s lastName=User \
+ -s enabled=true \
+ -s emailVerified=true
+
+./kcadm.sh set-password -r cloud --username testuser -p 'pwd here' --temporary
+
+--config /root/admin-assets/workshop/rh-sso-client/.keycloak/kcadm.config

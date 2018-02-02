@@ -11,3 +11,7 @@ credentials.json
 
 *.sh
 rhbrlab-bot
+
+# keycloak client
+.keycloak
+!admin-assets/workshop/*.sh
