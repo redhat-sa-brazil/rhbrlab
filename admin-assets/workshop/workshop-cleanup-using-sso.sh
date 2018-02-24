@@ -42,7 +42,7 @@ for idx in $( seq $NUMBER_OF_ATTENDDES ); do
     echo -e "\t deleting user $ocp_user_sso_id identity"
     ocp_user_sso_id=$(oc get user ${CUSTOMER}-user-${idx} | grep -v NAME| awk '{ print $NF}')
     #sso_user_id=$(echo $ocp_user_sso_id | cut -d ':' -f2)
-    oc delete --ignore-not-found identity "${ocp_user_sso_id}"
+    oc delete --ignore-not-found identity "Red Hat Single Sign ${ocp_user_sso_id}"
     oc delete --ignore-not-found user ${CUSTOMER}-user-${idx}
 
     echo -e "\t deleting ${CUSTOMER}-user-${idx}'s project"

@@ -12,7 +12,7 @@ OCP_API_SERVER_URL='https://console.paas.rhbrlab.com'
 KEYCLOAK_SERVER_URL='https://login.apps.paas.rhbrlab.com/auth'
 #WORKSHOP_TYPE=${1:-ocp}
 CUSTOMER=${1:-workshop}
-DEFAULT_TEMP_PWD='abc@123'
+DEFAULT_TEMP_PWD='workshop'
 NUMBER_OF_ATTENDDES=${2:-1}
 KCADM_HOME=/home/cloud-user/admin-assets/workshop/rh-sso-client
 
