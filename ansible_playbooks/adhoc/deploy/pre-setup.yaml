@@ -5,7 +5,7 @@
   vars:
     rhn_username: ""                # RHN Username
     rhn_password: ""                # RHN Password
-    rhn_pool: "^Employee SKU"       # RHSM Pool for OpenShift subscription
+    rhn_pool: ""                    # RHSM Pool for OpenShift subscription
     dockerstorage_dev: "/dev/sdb"   # Disk used for Docker Storage
 
   tasks:
@@ -25,6 +25,11 @@
       yum:
         name: "*"
         state: latest
+
+    - name: Make sure SELinux is enabled and enforcing
+      selinux:
+        policy: targeted
+        state: enforcing
 
     - name: Install dependencies and must-have RPMs
       yum:
