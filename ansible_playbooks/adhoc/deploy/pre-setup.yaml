@@ -7,6 +7,11 @@
     rhn_password: ""                # RHN Password
     rhn_pool: ""                    # RHSM Pool for OpenShift subscription
     dockerstorage_dev: "/dev/sdb"   # Disk used for Docker Storage
+    versao_openshift: "3.7"
+
+  tasks:
+#    - name: Certifica que os hostnames estao exatamente iguais as entradas de DNS do Inventario (Opcional)
+#      shell: "hostname {{ inventory_hostname }} "     
 
   tasks:
     - name: Register instance and activate subscriptions using RHSM
@@ -15,11 +20,12 @@
         username: "{{ rhn_username }}"
         password: "{{ rhn_password }}"
         pool: "{{ rhn_pool }}"
+        autosubscribe: yes
         force_register: yes
 
     - name: Ensure the correct repositories are enabled
       command: 'subscription-manager repos --disable="*" --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" \
-    --enable="rhel-7-server-ose-3.6-rpms" --enable="rhel-7-fast-datapath-rpms"'
+    --enable="rhel-7-server-ose-{{ versao_openshift }}-rpms" --enable="rhel-7-fast-datapath-rpms"'
 
     - name: Update all RPMs packages
       yum:
